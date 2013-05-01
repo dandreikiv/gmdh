@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2CA45ED317215BCD0039DAD5 /* data.csv in Resources */ = {isa = PBXBuildFile; fileRef = 2CA45ED217215BCD0039DAD5 /* data.csv */; };
+		2CA45ED517215C4D0039DAD5 /* gauss.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CA45ED417215C4D0039DAD5 /* gauss.c */; };
 		2CABD2431720340B006CF682 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABD2421720340B006CF682 /* UIKit.framework */; };
 		2CABD2451720340B006CF682 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABD2441720340B006CF682 /* Foundation.framework */; };
 		2CABD2471720340B006CF682 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CABD2461720340B006CF682 /* CoreGraphics.framework */; };
@@ -21,6 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2CA45ED217215BCD0039DAD5 /* data.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.csv; sourceTree = "<group>"; };
+		2CA45ED417215C4D0039DAD5 /* gauss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gauss.c; sourceTree = "<group>"; };
+		2CA45ED617215C5E0039DAD5 /* gauss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gauss.h; sourceTree = "<group>"; };
 		2CABD23F1720340B006CF682 /* gauss.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gauss.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CABD2421720340B006CF682 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2CABD2441720340B006CF682 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -56,6 +61,7 @@
 		2CABD2361720340B006CF682 = {
 			isa = PBXGroup;
 			children = (
+				2CA45ED217215BCD0039DAD5 /* data.csv */,
 				2CABD2481720340B006CF682 /* gauss */,
 				2CABD2411720340B006CF682 /* Frameworks */,
 				2CABD2401720340B006CF682 /* Products */,
@@ -87,6 +93,8 @@
 				2CABD2521720340B006CF682 /* AppDelegate.m */,
 				2CABD25A1720340B006CF682 /* ViewController.h */,
 				2CABD25B1720340B006CF682 /* ViewController.m */,
+				2CA45ED417215C4D0039DAD5 /* gauss.c */,
+				2CA45ED617215C5E0039DAD5 /* gauss.h */,
 				2CABD25D1720340C006CF682 /* ViewController.xib */,
 				2CABD2491720340B006CF682 /* Supporting Files */,
 			);
@@ -163,6 +171,7 @@
 				2CABD2571720340B006CF682 /* Default@2x.png in Resources */,
 				2CABD2591720340B006CF682 /* Default-568h@2x.png in Resources */,
 				2CABD25F1720340C006CF682 /* ViewController.xib in Resources */,
+				2CA45ED317215BCD0039DAD5 /* data.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,6 +185,7 @@
 				2CABD24F1720340B006CF682 /* main.m in Sources */,
 				2CABD2531720340B006CF682 /* AppDelegate.m in Sources */,
 				2CABD25C1720340B006CF682 /* ViewController.m in Sources */,
+				2CA45ED517215C4D0039DAD5 /* gauss.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +308,7 @@
 				2CABD2641720340C006CF682 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
