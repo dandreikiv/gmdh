@@ -10,7 +10,6 @@
 #define gauss_gauss_h
 
 double **two_dimension_array_with_size(int size);
-
 double *gauss_n(double **x, double *b, int size);
 
 int check_if_matrix_is_correct(double **x, double *b, int size);
