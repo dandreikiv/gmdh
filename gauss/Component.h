@@ -10,10 +10,21 @@
 #import "Layer.h"
 
 @interface Component : Layer {
-@private
-    NSArray * parameters_;
+    double * _data;
+    double * _realData;
+    double * _params;
+    double * _calculatedData;
+    int      _size;
+    double   _deviation;
 }
 
-- (void)calculateComponent;
+- (instancetype)initWithData:(double *)data
+                    realData:(double *)realData
+                        size:(int)size;
+
+- (void)calculate;
+- (double)deviation;
+- (double *)params;
+- (double *)calculatedData;
 
 @end

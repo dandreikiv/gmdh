@@ -9,18 +9,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gauss.h"
-
-
-double **two_dimension_array_with_size(int size){
-    double **result = (double**)malloc(size * sizeof(double*));
-    for (int i = 0; i < size; i++) {
-        result[i] = (double*)malloc(size * sizeof(double));
-    }
-    return result;
-}
+#include "array_helpers.h"
 
 double *gauss_n(double **x, double *b, int size)
 {
+    if (size == 0) {
+        return NULL;
+    }
+    
     if (x == NULL) {
         printf("X matrix cannot be NULL");
         return NULL;
@@ -78,36 +74,11 @@ int check_if_matrix_is_correct(double **x, double *b, int size)
         b[0] = b[row];
         b[row] = t;
         
-        p_printMatrix(x, size);
+        p_printMatrix(x, size, size);
         p_printBMatrix(b, size);
         
         row++;
     }
     
     return x[0][0] != 0;
-}
-
-void swap_rows_in_matrix(double **x, int source, int destination, int size) {
-    for (int col = 0; col < size; col++) {
-        double t = x[source][col];
-        x[source][col] = x[destination][col];
-        x[destination][col] = t;
-    }
-}
-
-void p_printMatrix(double **x, int size){
-    for (int i = 0; i < size; i++) {
-        printf("[");
-        for (int j = 0; j < size; j++) {
-            printf("%2.2f ", x[i][j]);
-        }
-        printf("]\n");
-    }
-    printf("--------------------------------\n");
-}
-
-void p_printBMatrix(double *m, int size){
-    printf("[");
-    for (int i = 0; i < size; i++) { printf("%f ", m[i]); };
-    printf("]\n\n");
 }

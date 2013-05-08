@@ -12,9 +12,11 @@
 
 @interface Layer : NSObject {
 @private
-    NSMutableArray * components_;
+    NSMutableArray * _components;
 }
 
-- (void)calculateWithData:(id)data;
+- (instancetype)initWithComponents:(NSArray *)components;
+
+- (void)calculate;
 
 @end

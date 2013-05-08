@@ -8,41 +8,12 @@
 
 #import "ViewController.h"
 #import "gauss.h"
-#import "CHCSVParser.h"
+#include <stdio.h>
+#include <stdlib.h>
+#import "array_helpers.h"
+#import "Component.h"
+#import "Layer.h"
 
-@interface Delegate : NSObject <CHCSVParserDelegate>
-
-@property (readonly) NSArray *lines;
-
-@end
-
-@implementation Delegate {
-    NSMutableArray *_lines;
-    NSMutableArray *_currentLine;
-}
-
-- (void)parserDidBeginDocument:(CHCSVParser *)parser {
-    _lines = nil;
-    _lines = [[NSMutableArray alloc] init];
-}
-- (void)parser:(CHCSVParser *)parser didBeginLine:(NSUInteger)recordNumber {
-    _currentLine = [[NSMutableArray alloc] init];
-}
-- (void)parser:(CHCSVParser *)parser didReadField:(NSString *)field atIndex:(NSInteger)fieldIndex {
-    NSLog(@"%@", field);
-    [_currentLine addObject:field];
-}
-- (void)parser:(CHCSVParser *)parser didEndLine:(NSUInteger)recordNumber {
-    [_lines addObject:_currentLine];
-    _currentLine = nil;
-}
-- (void)parserDidEndDocument:(CHCSVParser *)parser {
-}
-- (void)parser:(CHCSVParser *)parser didFailWithError:(NSError *)error {
-	NSLog(@"ERROR: %@", error);
-    _lines = nil;
-}
-@end
 
 @interface ViewController ()
 
@@ -53,58 +24,97 @@
 - (void)viewDidLoad
 {
     NSString *file = [[NSBundle mainBundle]pathForResource:@"data.csv" ofType:nil];
-	
-	NSStringEncoding encoding = 0;
-    NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:file];
-	CHCSVParser * p = [[CHCSVParser alloc] initWithInputStream:stream usedEncoding:&encoding delimiter:','];
-    [p setRecognizesBackslashesAsEscapes:YES];
-    [p setSanitizesFields:YES];
-	
-	Delegate * d = [[Delegate alloc] init];
-	[p setDelegate:d];
-	[p parse];
+	NSLog(@"fileName:%@", file);
+    NSArray * values = [self readFile:file];
+    NSLog(@"Values:%@", values);
     
+    NSInteger length  = [values count];
+    NSInteger columns = 4;
+    NSInteger rows    = length - columns + 1;
     
-    int size = 3;
+    double ** dataArray = [self convert:values toArrayOfRows:rows columns:columns];
     
-    double **p_x = two_dimension_array_with_size(size);
-    double *p_b  = (double*)malloc(size * sizeof(double));
+    double *firstColumn = columnWithNumber(0, dataArray, rows, columns);
+    p_printBMatrix(firstColumn, rows);
+    double *bColumn     = columnWithNumber(columns - 1, dataArray, rows, columns);
     
-    p_x[0][0] = 13.3551;
-    p_x[0][1] = 13.53;
-    p_x[0][2] = 13.3;
+    NSMutableArray * components = [NSMutableArray array];
     
-    p_x[1][0] = 13.53;
-    p_x[1][1] = 14.48;
-    p_x[1][2] = 14.6;
-    
-    p_x[2][0] = 13.3;
-    p_x[2][1] = 14.6;
-    p_x[2][2] = 16;
+//    for (int colIdx = 0; colIdx < columns - 1; colIdx++) {
+//        double * column  = columnWithNumber(colIdx, dataArray, rows, columns);
+//        double * params  = mnk_linear(column, bColumn, rows);
+//        
+//        double deviation = standartDeviation(params, 2, column, bColumn, rows);
+//        printf("deviation = %f\n", deviation);
+//    }
 
-    p_b[0] = 14.703;
-    p_b[1] = 15.96;
-    p_b[2] = 16.5;
     
-    p_printMatrix(p_x, size);
-    
-    if (check_if_matrix_is_correct(p_x, p_b, size)) {
-        double * result = gauss_n(p_x, p_b, size);
-        p_printBMatrix(result, size);
-    } else {
-        printf("the matrix is incorrect\n");
+    for (int colIdx = 0; colIdx < columns - 1; colIdx++) {
+        double * column       = columnWithNumber(colIdx, dataArray, rows, columns);
+        Component * component = [[Component alloc] initWithData:column realData:bColumn size:rows];
+        [components addObject:component];
     }
 
+    Layer * layer = [[Layer alloc] initWithComponents:components];
+    [layer calculate];
+    
     
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
 
+- (NSArray *)readFile:(NSString *)file
+{
+    NSMutableArray * result = [NSMutableArray array];
+    
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    
+    fp = fopen([file cStringUsingEncoding:NSUTF8StringEncoding], "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+    
+    while ((read = getline(&line, &len, fp)) != -1) {
+        printf("Retrieved line of length %zu :\n", read);
+        printf("%s", line);
+        
+        double value = [[NSString stringWithCString:line encoding:NSUTF8StringEncoding] doubleValue];
+        [result addObject:@(value)];
+    }
+    
+    if (line)
+        free(line);
+    
+    return [NSArray arrayWithArray:result];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (double **)convert:(NSArray *)source toArrayOfRows:(NSInteger)rows columns:(NSInteger)columns
+{
+    NSParameterAssert(source);
+    NSAssert(columns > 2, @"There is no point to create an array with less then 2 columns");
+    NSAssert(source.count > columns, @"Not enough data. The source array is smaller then number of columns");
+    
+    double **result = two_dimension_array_with_size(rows, columns);
+    
+    for (int rowIdx = 0; rowIdx < rows; rowIdx++) {
+        for (int colIdx = 0; colIdx < columns; colIdx++) {
+            double value = [source[colIdx + rowIdx] doubleValue];
+            result[rowIdx][colIdx] = value;
+        }
+    }
+    
+    p_printMatrix(result, rows, columns);
+    
+    return result;
 }
 
 @end
