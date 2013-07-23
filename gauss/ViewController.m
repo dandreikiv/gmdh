@@ -13,6 +13,7 @@
 #import "array_helpers.h"
 #import "Component.h"
 #import "Layer.h"
+#import "OLS.h"
 
 
 @interface ViewController ()
@@ -32,32 +33,24 @@
     NSInteger columns = 4;
     NSInteger rows    = length - columns + 1;
     
-    double ** dataArray = [self convert:values toArrayOfRows:rows columns:columns];
+    double **dataArray = [self convert:values toArrayOfRows:rows columns:columns];
     
-    double *firstColumn = columnWithNumber(0, dataArray, rows, columns);
-    p_printBMatrix(firstColumn, rows);
-    double *bColumn     = columnWithNumber(columns - 1, dataArray, rows, columns);
+    double **x_values = two_dimension_array_with_size(rows, columns - 1);
+    double *y_values  = columnWithNumber(columns - 1, dataArray, rows, columns);
     
-    NSMutableArray * components = [NSMutableArray array];
-    
-//    for (int colIdx = 0; colIdx < columns - 1; colIdx++) {
-//        double * column  = columnWithNumber(colIdx, dataArray, rows, columns);
-//        double * params  = mnk_linear(column, bColumn, rows);
-//        
-//        double deviation = standartDeviation(params, 2, column, bColumn, rows);
-//        printf("deviation = %f\n", deviation);
-//    }
-
-    
-    for (int colIdx = 0; colIdx < columns - 1; colIdx++) {
-        double * column       = columnWithNumber(colIdx, dataArray, rows, columns);
-        Component * component = [[Component alloc] initWithData:column realData:bColumn size:rows];
-        [components addObject:component];
+    for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < columns - 1; col++) {
+            x_values[row][col] = dataArray[row][col];
+        }
     }
-
-    Layer * layer = [[Layer alloc] initWithComponents:components];
-    [layer calculate];
     
+    p_printMatrix(dataArray, rows, columns);
+    p_printMatrix(x_values, rows, columns - 1);
+    p_printBMatrix(y_values, rows);
+    
+    OLS * olsCalc = [OLS new];
+    double * koefs = [olsCalc ols:x_values y_values:y_values dataSize:CGSizeMake(columns - 1, rows)];
+    p_printBMatrix(koefs, columns - 1);
     
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.

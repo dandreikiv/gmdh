@@ -15,7 +15,6 @@
 
 // y = ax + b;
 // Returen params as array r[0] = a, r[1] = b;
-// @Values - 1-dimensional array with data
 double * mnk_linear(double * x_array, double * y_array, int size)
 {
     /*
