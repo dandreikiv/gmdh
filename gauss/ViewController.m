@@ -16,8 +16,8 @@
 
 - (void)viewDidLoad
 {
-    [self buildWenerRowWithSize:5];
-    
+
+    [self buildWenerRowWithSize:4];
     NSString *file = [[NSBundle mainBundle]pathForResource:@"data.csv" ofType:nil];
 	NSLog(@"fileName:%@", file);
     NSArray * values = [self readFile:file];
@@ -132,6 +132,23 @@ static int count = 0;
         printf("\n");
         count++;
     }
+}
+
+- (long long)componentsSizeWithLength:(int)length
+{
+    NSAssert(length <= 10, @"The result will be too big.");
+    int topStart = length + 1;
+    int bottomStart = 2;
+    return [self multNumbersStartsFrom:topStart    to:length * 2] /
+           [self multNumbersStartsFrom:bottomStart to:length];
+}
+
+- (long long)multNumbersStartsFrom:(int)start to:(int)end
+{
+    long long result = start;
+    for (int i = start + 1; i <= end; i++)
+        result = result * i;
+    return result;
 }
 
 @end
