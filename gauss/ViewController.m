@@ -1,18 +1,10 @@
-//
-//  ViewController.m
-//  gauss
-//
-//  Created by Dmitriy Andreykiv on 4/18/13.
-//  Copyright (c) 2013 XS2TheWorld. All rights reserved.
-//
+
 
 #import "ViewController.h"
 #import "gauss.h"
 #include <stdio.h>
 #include <stdlib.h>
 #import "array_helpers.h"
-#import "Component.h"
-#import "Layer.h"
 #import "OLS.h"
 
 
@@ -24,6 +16,8 @@
 
 - (void)viewDidLoad
 {
+    [self buildWenerRowWithSize:5];
+    
     NSString *file = [[NSBundle mainBundle]pathForResource:@"data.csv" ofType:nil];
 	NSLog(@"fileName:%@", file);
     NSArray * values = [self readFile:file];
@@ -56,6 +50,10 @@
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
+- (void)prepareDataForModeling:(double **)array size:(CGSize)size
+{
+    
+}
 
 - (NSArray *)readFile:(NSString *)file
 {
@@ -84,12 +82,6 @@
     return [NSArray arrayWithArray:result];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (double **)convert:(NSArray *)source toArrayOfRows:(NSInteger)rows columns:(NSInteger)columns
 {
     NSParameterAssert(source);
@@ -108,6 +100,38 @@
     p_printMatrix(result, rows, columns);
     
     return result;
+}
+
+
+- (void)buildWenerRowWithSize:(int)n
+{
+    for (int row = 1; row <= n; row++) {
+        int * components = (int *)malloc(sizeof(int) * row);
+        for (int i = 0; i < row; i++) {
+            components[i] = -1;
+        }
+        [self combinations:row deep:0 length:n components:components];
+        free(components);
+    }
+
+    printf("count:%d\n", count);
+}
+
+static int count = 0;
+- (void)combinations:(int)n deep:(int)deep length:(int)length components:(int *)components
+{
+    if (deep < n) {
+        double min = (deep == 0) ? 0 : components[deep - 1];
+        for (int value = min; value < length; value++) {
+            components[deep] = value;
+            [self combinations:n deep:(deep + 1) length:length components:components];
+        }
+    } else {
+        for (int i = 0; i < n; i++)
+            printf("%d ", components[i]);
+        printf("\n");
+        count++;
+    }
 }
 
 @end
